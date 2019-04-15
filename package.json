@@ -1,0 +1,21 @@
+{
+  "name": "untitled1",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "nodemon ./bin/www"
+  },
+  "dependencies": {
+    "body-parser": "^1.18.3",
+    "browserify": "^16.2.3",
+    "cookie-parser": "~1.4.3",
+    "debug": "~2.6.9",
+    "excel4node": "^1.7.1",
+    "express": "~4.16.0",
+    "http-errors": "~1.6.2",
+    "maxlength-contenteditable": "^1.0.1",
+    "mongoose": "^5.4.22",
+    "morgan": "~1.9.0",
+    "pug": "2.0.0-beta11"
+  }
+}
