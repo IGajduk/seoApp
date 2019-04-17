@@ -45,50 +45,81 @@ block content
       div
         //h3(class='col-header') Final Mobile URL
   div(id="top-header")
+      div(id="all-rows-checkbox-block")
+        input(type="checkbox" id="all-rows" checked)
       div(id="row1" class="displ-flex-row")
           p(class='row-head') A
           p(class='row-head') Campaign
+              input(type="checkbox" class='row-checkbox' checked name="row1")
       div(id="row2" class="displ-flex-row")
           p(class='row-head') B
           p(class='row-head') Campaign Daily Budget
+            input(type="checkbox" class='row-checkbox' checked name="row2")
       div(id="row3" class="displ-flex-row")
           p(class='row-head') C
           p(class='row-head') AdGroup
+            input(type="checkbox" class='row-checkbox' checked name="row3")
       div(id="row4" class="displ-flex-row")
           p(class='row-head') D
           p(class='row-head') KeyWord
+            input(type="checkbox" class='row-checkbox' checked name="row4")
       div(id="row5" class="displ-flex-row")
           p(class='row-head') E
-          p(class='row-head') Headline 1
+          p(class='row-head') Headline1
+              input(type="checkbox" class='row-checkbox' checked name="row5")
       div(id="row6" class="displ-flex-row")
           p(class='row-head') F
           p(class='row-head') Headline 2
+              input(type="checkbox" class='row-checkbox' checked name="row6")
       div(id="row7" class="displ-flex-row")
           p(class='row-head') G
           p(class='row-head') Headline 3
+            input(type="checkbox" class='row-checkbox' checked name="row7")
       div(id="row8" class="displ-flex-row")
           p(class='row-head') H
           p(class='row-head') Description 1
+              input(type="checkbox" class='row-checkbox' checked name="row8")
+              button(id="get-data-from-adGroup") Перенести с AdGroup
+
       div(id="row9" class="displ-flex-row")
           p(class='row-head') I
           p(class='row-head') Description2
+            input(type="checkbox" class='row-checkbox' checked name="row9")
       div(id="row10" class="displ-flex-row")
           p(class='row-head') J
           p(class='row-head') Final URL
+            input(type="checkbox" class='row-checkbox' checked name="row10")
       div(id="row11" class="displ-flex-row")
           p(class='row-head') K
           p(class='row-head') Path 1
+            input(type="checkbox" class='row-checkbox' checked name="row11")
       div(id="row12" class="displ-flex-row")
           p(class='row-head') L
           p(class='row-head') Path 2
+              input(type="checkbox" class='row-checkbox' checked name="row12")
       div(id="row13" class="displ-flex-row")
           p(class='row-head') M
           p(class='row-head') MaxCpc
+            input(type="checkbox" class='row-checkbox' checked name="row13")
       div(id="row14" class="displ-flex-row")
           p(class='row-head') N
           p(class='row-head') Final Mobile URL
+              input(type="checkbox" class='row-checkbox' checked name="row14")
 
+  div(id="div-range-to-copy")
 
   div(id="for-numbers-of-cols")
+      div(id="all-cols-checkbox-block")
+        input(type="checkbox" id="all-cols" checked)
+
   div(class="block-with-actions")
-        img(id='btn-create-document' src='/images/download.png')
+        img(id='btn-create-document' src='/images/download.png' alt="Create file" title="Create file")
+        img(id='clear-localStorage' src='/images/delete.png' alt="Delete all cells and local storage" title="Delete all cells and local storage data for this app")
+
+  div(id="col-menu-with-actions")
+    span(class="actions-for-col-menu" id="add-col-with-plus") Добавить + (KeyWord)
+    span(class="actions-for-col-menu" id="add-col-with-square-brackets") Добавить строку с [ ]
+    span(class="actions-for-col-menu" id="add-col-with-quotes") Добавить строку с ""
+    span(class="actions-for-col-menu" id="add-empty-col") Добавить строку
+    span(class="actions-for-col-menu" id="delete-col-with-shift") Удалить строку co сдвигом
+    span(class="actions-for-col-menu" id="clean-col") Очистить строку

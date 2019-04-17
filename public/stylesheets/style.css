@@ -1,5 +1,5 @@
 body {
-  padding: 50px;
+  padding: 93px 50px 50px 100px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
   background: #dedede;
 }
@@ -10,7 +10,7 @@ a {
 
 #main {
   display: flex;
-  width: 8788px;
+  width: 5200px;
 }
 
 #main>div{
@@ -53,6 +53,7 @@ a {
     box-sizing: border-box;
     padding: 5px 5px;
     height: 25px;
+    font-size: small;
 }
 
 .input-cell::before {
@@ -98,20 +99,20 @@ a {
     top: 0;
     z-index: 101;
     left: 0;
-    padding-left: 58px;
+    padding-left: 108px;
     display: flex;
     width: 5000px;
 }
 
 #for-numbers-of-cols {
-    padding-top: 58px;
+    padding-top: 101px;
     height: 1000px;
     background: #f1f1f1;
     position: fixed;
     top: 0;
     left: 0;
     z-index: 101;
-    width: 58px;
+    width: 70px;
 }
 
 .for-col-of-cel {
@@ -149,12 +150,19 @@ a {
     z-index: 104;
     height: 51px;
     border: 1px solid #dedede;
-    width: 58px;
+    width: 70px;
     background: #f7f9f9;
     box-sizing: border-box;
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-wrap: wrap;
+}
+#clear-localStorage {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    z-index: 105;
 }
 
 #headline1 {
@@ -195,10 +203,9 @@ a {
     color: #92ada5;
     background: white;
     z-index: 100;
-    margin-left: 250px;
+    margin-left: 242px;
     padding-left: 5px;
 }
-
 
 #row8{
    width: 736px;
@@ -222,7 +229,7 @@ a {
     color: #92ada5;
     background: white;
     z-index: 100;
-    margin-left: 710px;
+    margin-left: 702px;
     padding-left: 5px;
 }
 
@@ -254,4 +261,91 @@ a {
     padding-left: 5px;
 }
 
+.cell-without-text {
+    font-size: 0;
+}
+
+#div-range-to-copy {
+    display: none;
+    background: none;
+    position: absolute;
+    border: 1px solid #c60000;
+    width: 10px;
+    height: 10px;
+    z-index: 9999;
+}
+
+#all-cols-checkbox-block {
+    position: absolute;
+    top: 51px;
+    left: 0;
+    height: 50px;
+    width: 70px;
+    box-sizing: border-box;
+    border: 1px solid #dedede;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: #f7f9f9;
+}
+
+.cols-checkbox{
+    cursor: pointer;
+}
+
+.row-checkbox{
+    cursor: pointer;
+}
+
+#all-cols {
+    cursor: pointer;
+}
+
+#all-rows {
+    cursor: pointer;
+}
+
+#all-rows-checkbox-block {
+    position: absolute;
+    top: 0;
+    left: 70px;
+    height: 51px;
+    width: 38px;
+    box-sizing: border-box;
+    border: 1px solid #dedede;
+    display: flex;
+    justify-content: center;
+    align-items: flex-end;
+}
+
+.more-actions-btn {
+    width: 8px;
+    height: 14px;
+    cursor: pointer;
+}
+
+#col-menu-with-actions {
+    left: -9999px;
+    top: 0;
+    z-index: 999999;
+    display: flex;
+    flex-direction: column;
+    min-width: 230px;
+    min-height: 150px;
+    background: #29302e;
+    position: absolute;
+    border-radius: 3px;
+    justify-content: center;
+}
+
+.actions-for-col-menu {
+    color: #ffffff;
+    width: 100%;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+.more-actions-btn-focused {
+    background: #7ed6bc;
+    border-radius: 10px;
+}
 
