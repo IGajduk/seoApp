@@ -164,6 +164,12 @@ a {
     cursor: pointer;
     z-index: 105;
 }
+#save-btn {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+    z-index: 105;
+}
 
 #headline1 {
     width: 274px !important;
@@ -331,18 +337,23 @@ a {
     display: flex;
     flex-direction: column;
     min-width: 230px;
-    min-height: 150px;
+    min-height: 170px;
     background: #29302e;
     position: absolute;
     border-radius: 3px;
     justify-content: center;
+    border: 1px solid #29302e;
 }
 
 .actions-for-col-menu {
     color: #ffffff;
-    width: 100%;
+    width: 230px;
     padding: 10px 20px;
     cursor: pointer;
+}
+.actions-for-col-menu:hover{
+    background: #ffffff;
+    color: #29302e;
 }
 .more-actions-btn-focused {
     background: #7ed6bc;

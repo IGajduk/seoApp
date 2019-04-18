@@ -113,13 +113,15 @@ block content
         input(type="checkbox" id="all-cols" checked)
 
   div(class="block-with-actions")
+        img(id='save-btn' src='/images/save.png' alt="Save data to local storage" title="Save data to local storage")
         img(id='btn-create-document' src='/images/download.png' alt="Create file" title="Create file")
         img(id='clear-localStorage' src='/images/delete.png' alt="Delete all cells and local storage" title="Delete all cells and local storage data for this app")
 
+
   div(id="col-menu-with-actions")
-    span(class="actions-for-col-menu" id="add-col-with-plus") Добавить + (KeyWord)
+    span(class="actions-for-col-menu" id="add-col-with-plus") Добавить + (в KeyWord текущей строки)
     span(class="actions-for-col-menu" id="add-col-with-square-brackets") Добавить строку с [ ]
     span(class="actions-for-col-menu" id="add-col-with-quotes") Добавить строку с ""
-    span(class="actions-for-col-menu" id="add-empty-col") Добавить строку
+    span(class="actions-for-col-menu" id="add-empty-col") Добавить пустую строку
     span(class="actions-for-col-menu" id="delete-col-with-shift") Удалить строку co сдвигом
     span(class="actions-for-col-menu" id="clean-col") Очистить строку

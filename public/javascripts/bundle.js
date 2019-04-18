@@ -1273,10 +1273,14 @@ document.addEventListener('click', (event) => {
 
     if(event.target.id === 'add-col-with-square-brackets') {
         console.log(event.target.parentNode.col);
+        addRemoveCol(1, event.target.parentNode.col, '+');
+        createStringWithSquadBrackets(event.target.parentNode.col);
     }
 
     if(event.target.id === 'add-col-with-quotes') {
         console.log(event.target.parentNode.col);
+        addRemoveCol(1, event.target.parentNode.col, '+');
+        createStringWithDoubleQuotes(event.target.parentNode.col);
     }
 
     if(event.target.id === 'delete-col-with-shift') {
@@ -1310,6 +1314,11 @@ document.addEventListener('click', (event) => {
             }
         }
         removeHideEmtyCellText();
+    }
+
+    if (event.target.id === 'save-btn'){
+        const arrOfCells = getAllInputsValuesArrForStorage();
+        localStorage.setItem('seoApp', JSON.stringify(arrOfCells));
     }
 
     if (event.target.id === 'clear-localStorage'){
@@ -2052,27 +2061,123 @@ function showColMenu(col, pageX, pageY){
     colMenu.col = col;
     colMenu.style.left = `${pageX}px`;
     colMenu.style.top = `${pageY}px`;
-    colMenu.addEventListener('mouseleave', () => {
-            colMenu.style.left = `-9999px`;
-            colMenu.style.top = `-9999px`;
-            const focusedMoreMenu = document.getElementsByClassName('more-actions-btn-focused');
-            for(let i = 0; i < focusedMoreMenu.length; i++) {
-                focusedMoreMenu[i].classList.remove('more-actions-btn-focused');
-            }
-    });
+    // colMenu.addEventListener('mouseleave', () => {
+    //         colMenu.style.left = `-9999px`;
+    //         colMenu.style.top = `-9999px`;
+    //         const focusedMoreMenu = document.getElementsByClassName('more-actions-btn-focused');
+    //         for(let i = 0; i < focusedMoreMenu.length; i++) {
+    //             focusedMoreMenu[i].classList.remove('more-actions-btn-focused');
+    //         }
+    // });
 }
 
 function mutateCellToCellWithPluses (col) {
     const cell = document.getElementById(`row4col${col}`);
-    const arr = cell.innerText.split(String.fromCodePoint(32));
-    console.log(arr, arr.length);
-    const maped = arr.map((x) => {
-        return '\+'+x
-    });
-    console.log(maped);
-    const stringsWithPlus = maped.join(String.fromCodePoint(32));
-    cell.innerText = stringsWithPlus;
-    cell.dataset.content = stringsWithPlus.length;
+    let arr;
+    let editArr;
+    if (cell.innerText.search(/\[/g) !== -1) {
+        let arrToEdit = cell.innerText.split('');
+        arrToEdit.shift();
+        arrToEdit.pop();
+        arr = arrToEdit.join('');
+        arr = arr.split(String.fromCodePoint(32));
+       console.log(arr);
+    } else if (cell.innerText.search(/\"/g) !== -1) {
+        let arrToEdit = cell.innerText.split('');
+        arrToEdit.shift();
+        arrToEdit.pop();
+        arr = arrToEdit.join('');
+        arr = arr.split(String.fromCodePoint(32));
+       console.log(arr);
+    } else {
+        arr = cell.innerText.split(String.fromCodePoint(32));
+    }
+
+        const maped = arr.map((x) => {
+            if (x.search(/\+/g) !== -1 || x === textForEmptyInput) {
+                console.log('contains +');
+                return x;
+            } else {
+                return '\+' + x;
+            }
+        });
+        const stringsWithPlus = maped.join(String.fromCodePoint(32));
+        if (cell.innerText === textForEmptyInput) {
+        } else {
+            cell.innerText = stringsWithPlus;
+            cell.dataset.content = stringsWithPlus.length;
+        }
+}
+
+function createStringWithSquadBrackets(col) {
+    const cell = document.getElementById(`row4col${col + 1}`);
+    const cellToAdd = document.getElementById(`row4col${col}`);
+    let newString;
+    if (cell.innerText === textForEmptyInput) {
+        console.log(cell.innerText);
+    } else {
+        if (cell.innerText.search(/\+/g) !== -1) {
+            const checkPlus = cell.innerText.split('+');
+            checkPlus.unshift('[');
+            checkPlus.push(']');
+            newString = checkPlus.join('');
+            console.log(newString);
+        } else if (cell.innerText.search(/\[/g) !== -1) {
+            newString = cell.innerText;
+        } else if (cell.innerText.search(/\"/g) !== -1) {
+            const checkQuotes = cell.innerText.split('"');
+
+            checkQuotes.unshift('[');
+            checkQuotes.push(']');
+            newString = checkQuotes.join('')
+            console.log(newString);
+        } else {
+            const checkQuotes = cell.innerText.split('');
+            checkQuotes.unshift('[');
+            checkQuotes.push(']');
+            newString = checkQuotes.join('');
+        }
+        cellToAdd.innerText = newString;
+        cellToAdd.dataset.content = newString.length;
+        cellToAdd.classList.remove('cell-without-text');
+        cellToAdd.click();
+    }
+}
+
+function createStringWithDoubleQuotes(col) {
+    const cell = document.getElementById(`row4col${col + 1}`);
+    const cellToAdd = document.getElementById(`row4col${col}`);
+    let newString;
+    if (cell.innerText === textForEmptyInput) {
+        console.log(cell.innerText);
+    } else {
+        if (cell.innerText.search(/\+/g) !== -1) {
+            const checkPlus = cell.innerText.split('+');
+            checkPlus.unshift('"');
+            checkPlus.push('"');
+            newString = checkPlus.join('');
+            console.log(newString);
+        } else if (cell.innerText.search(/\"/g) !== -1) {
+            newString = cell.innerText;
+        } else if (cell.innerText.search(/\[/g) !== -1) {
+            let arr = cell.innerText.split('[');
+            let checkQuotes = arr.join('');
+            checkQuotes = checkQuotes.split(']');
+            checkQuotes.unshift('"');
+            checkQuotes.push('"');
+            newString = checkQuotes.join('')
+            console.log(newString);
+        } else {
+            const checkQuotes = cell.innerText.split('');
+            checkQuotes.unshift('"');
+            checkQuotes.push('"');
+            newString = checkQuotes.join('');
+        }
+        cellToAdd.innerText = newString;
+        cellToAdd.dataset.content = newString.length;
+        cellToAdd.classList.remove('cell-without-text');
+        cellToAdd.click();
+    }
 }
 
 },{"maxlength-contenteditable":1}]},{},[2]);
