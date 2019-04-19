@@ -2,30 +2,68 @@ var express = require('express');
 var router = express.Router();
 const path = require('path');
 
-/* GET users listing. */
 router.post('/', function(req, res, next) {
 
 
-  // Require library
   var xl = require('excel4node');
 
-// Create a new instance of a Workbook class
   var wb = new xl.Workbook();
 
-// Add Worksheets to the workbook
   var ws = wb.addWorksheet('Sheet 1');
-  var ws2 = wb.addWorksheet('Sheet 2');
 
-// Create a reusable style
   var style = wb.createStyle({
     font: {
-      color: '#FF0800',
+      color: '#000000',
       size: 12,
     },
-    numberFormat: '$#,##0.00; ($#,##0.00); -',
+    numberFormat: '0000.0000',
   });
+    ws.cell(1, 1)
+        .string('Campaign')
+        .style(style);
+ws.cell(1, 2)
+        .string('Campaign Daily Budget')
+        .style(style);
+ws.cell(1, 3)
+        .string('AdGroup')
+        .style(style);
+ws.cell(1, 4)
+        .string('KeyWord')
+        .style(style);
+ws.cell(1, 5)
+        .string('Headline 1')
+        .style(style);
+ws.cell(1, 6)
+        .string('Headline 2')
+        .style(style);
+ws.cell(1, 7)
+        .string('Headline 3')
+        .style(style);
+ws.cell(1, 8)
+        .string('Description 1')
+        .style(style);
+ws.cell(1, 9)
+        .string('Description 2')
+        .style(style);
+ws.cell(1, 10)
+        .string('Final URL')
+        .style(style);
+ws.cell(1, 11)
+        .string('Path 1')
+        .style(style);
+ws.cell(1, 12)
+        .string('Path 2')
+        .style(style);
+ws.cell(1, 13)
+        .string('MaxCpc')
+        .style(style);
+ws.cell(1, 14)
+        .string('Final Mobile URL')
+        .style(style);
 
-// Set value of cell A1 to 100 as a number type styled with paramaters of style
+
+
+
   const cells = req.body;
   console.log(cells.length);
   for (let i = 0; i < cells.length; i++) {
@@ -33,7 +71,6 @@ router.post('/', function(req, res, next) {
           .string(cells[i].value)
           .style(style);
   }
-// Set value of cell B1 to 200 as a number type styled with paramaters of style
 
     const createdFileName = path.join(__dirname, '../public', 'upload', `${cells[0].fileTitle}.xlsx`);
     // const createdFileName = path.join(__dirname, '../public', 'upload', `${cells[0].value}.xlsx`);

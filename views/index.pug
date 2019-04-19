@@ -51,60 +51,75 @@ block content
           p(class='row-head') A
           p(class='row-head') Campaign
               input(type="checkbox" class='row-checkbox' checked name="row1")
+              img(src="/images/moreActions.png" class="more-actions-btn-rows")
       div(id="row2" class="displ-flex-row")
           p(class='row-head') B
           p(class='row-head') Campaign Daily Budget
             input(type="checkbox" class='row-checkbox' checked name="row2")
+            img(src="/images/moreActions.png" class="more-actions-btn-rows")
       div(id="row3" class="displ-flex-row")
           p(class='row-head') C
           p(class='row-head') AdGroup
             input(type="checkbox" class='row-checkbox' checked name="row3")
+            img(src="/images/moreActions.png" class="more-actions-btn-rows")
       div(id="row4" class="displ-flex-row")
           p(class='row-head') D
           p(class='row-head') KeyWord
             input(type="checkbox" class='row-checkbox' checked name="row4")
+            img(src="/images/moreActions.png" class="more-actions-btn-rows")
       div(id="row5" class="displ-flex-row")
           p(class='row-head') E
           p(class='row-head') Headline1
               input(type="checkbox" class='row-checkbox' checked name="row5")
+              img(src="/images/moreActions.png" class="more-actions-btn-rows")
       div(id="row6" class="displ-flex-row")
           p(class='row-head') F
           p(class='row-head') Headline 2
               input(type="checkbox" class='row-checkbox' checked name="row6")
+              img(src="/images/moreActions.png" class="more-actions-btn-rows")
       div(id="row7" class="displ-flex-row")
           p(class='row-head') G
           p(class='row-head') Headline 3
             input(type="checkbox" class='row-checkbox' checked name="row7")
+            img(src="/images/moreActions.png" class="more-actions-btn-rows")
       div(id="row8" class="displ-flex-row")
           p(class='row-head') H
           p(class='row-head') Description 1
               input(type="checkbox" class='row-checkbox' checked name="row8")
+              img(src="/images/moreActions.png" class="more-actions-btn-rows")
               button(id="get-data-from-adGroup") Перенести с AdGroup
+
 
       div(id="row9" class="displ-flex-row")
           p(class='row-head') I
           p(class='row-head') Description2
             input(type="checkbox" class='row-checkbox' checked name="row9")
+            img(src="/images/moreActions.png" class="more-actions-btn-rows")
       div(id="row10" class="displ-flex-row")
           p(class='row-head') J
           p(class='row-head') Final URL
             input(type="checkbox" class='row-checkbox' checked name="row10")
+            img(src="/images/moreActions.png" class="more-actions-btn-rows")
       div(id="row11" class="displ-flex-row")
           p(class='row-head') K
           p(class='row-head') Path 1
             input(type="checkbox" class='row-checkbox' checked name="row11")
+            img(src="/images/moreActions.png" class="more-actions-btn-rows")
       div(id="row12" class="displ-flex-row")
           p(class='row-head') L
           p(class='row-head') Path 2
               input(type="checkbox" class='row-checkbox' checked name="row12")
+              img(src="/images/moreActions.png" class="more-actions-btn-rows")
       div(id="row13" class="displ-flex-row")
           p(class='row-head') M
           p(class='row-head') MaxCpc
             input(type="checkbox" class='row-checkbox' checked name="row13")
+            img(src="/images/moreActions.png" class="more-actions-btn-rows")
       div(id="row14" class="displ-flex-row")
           p(class='row-head') N
           p(class='row-head') Final Mobile URL
               input(type="checkbox" class='row-checkbox' checked name="row14")
+              img(src="/images/moreActions.png" class="more-actions-btn-rows")
 
   div(id="div-range-to-copy")
 
@@ -120,8 +135,12 @@ block content
 
   div(id="col-menu-with-actions")
     span(class="actions-for-col-menu" id="add-col-with-plus") Добавить + (в KeyWord текущей строки)
+    span(class="actions-for-col-menu" id="add-two-cols-with-plus") Добавить две строки с [ ] и ""
     span(class="actions-for-col-menu" id="add-col-with-square-brackets") Добавить строку с [ ]
     span(class="actions-for-col-menu" id="add-col-with-quotes") Добавить строку с ""
     span(class="actions-for-col-menu" id="add-empty-col") Добавить пустую строку
     span(class="actions-for-col-menu" id="delete-col-with-shift") Удалить строку co сдвигом
     span(class="actions-for-col-menu" id="clean-col") Очистить строку
+
+  div(id="row-menu-with-actions")
+    span(class="actions-for-row-menu" id="clean-row") Очистить столбец

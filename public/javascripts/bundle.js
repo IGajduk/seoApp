@@ -1117,8 +1117,6 @@ const maxlengthContentEditableLib = require('maxlength-contenteditable');
 const mainInput = document.getElementById('main');
 const sideBarWithColNumbers = document.getElementById('for-numbers-of-cols');
 const HeaderBarWithRowsAndSections = document.getElementById('top-header');
-const oneOfDiv = document.getElementById('campaign');
-let tabIndex = 0;
 let copyBuffer;
 const textForEmptyInput = 'justEmpty';
 let focusedElements = [];
@@ -1146,7 +1144,6 @@ for(let i = 0; i < 14; i++) {
                     newElem.innerText = found.value;
                     newElem.classList.remove('cell-without-text');
                     newElem.dataset.content = found.value.length;
-                    // console.log(found.value.codePointAt(0), found.value.codePointAt(1), found.value.codePointAt(2), found.value.codePointAt(3));
                 }
             }
         }
@@ -1177,33 +1174,47 @@ for(let i = 0; i < 14; i++) {
 }
 
 
+function addInput() {
+    const placeBefore = document.getElementsByClassName('addInput');
 
+    const colNumber = createNumberOfCell();
+    const blockToAppendColNumber = document.getElementById('for-numbers-of-cols');
+    colNumber.col = mainInput.childNodes[1].childElementCount;
+    colNumber.innerText = mainInput.childNodes[1].childElementCount;
+    colNumber.setAttribute('id', `col${mainInput.childNodes[1].childElementCount}`);
+    const checkbox = createCheckbox();
+    checkbox.setAttribute('name', `col${mainInput.childNodes[1].childElementCount}`);
+    colNumber.appendChild(checkbox);
+    blockToAppendColNumber.appendChild(colNumber);
+    moreActionsElemCreate(colNumber);
+
+    for(let i = 0; i < mainInput.childNodes.length; i++) {
+        const newElem = createInput();
+        newElem.classList.add(`row${i + 1}`);
+        newElem.row = i + 1;
+        newElem.col = mainInput.childNodes[i].childElementCount;
+        newElem.id = `row${newElem.row}col${newElem.col}`;
+        newElem.classList.add(`col${mainInput.childNodes[i].childElementCount}`);
+        newElem.classList.add('cell-without-text');
+        if (newElem.row === 6 || newElem.row === 7) {
+            newElem.setAttribute('data-max-length', '30');
+        } else if (newElem.row === 8 || newElem.row === 9) {
+            newElem.setAttribute('data-max-length', '90');
+        } else if (newElem.row === 11 || newElem.row === 12) {
+            newElem.setAttribute('data-max-length', '15');
+        }
+        mainInput.childNodes[i].insertBefore(newElem, placeBefore[i]);newElem.innerText = textForEmptyInput;
+    }
+
+}
 
 maxlengthContentEditableLib.maxlengthContentEditable(); // browserify main.js -o bundle.js
-
-// function createBlockWithAddBtnAndInput() {
-//     const div = document.createElement('div');
-//     div.setAttribute('class', 'block-with-input-and-btn');
-//
-//     const input = document.createElement('input');
-//     input.setAttribute('class', 'input-add-many-cells');
-//     input.setAttribute('type', 'text');
-//
-//     const btn = document.createElement('input');
-//     btn.setAttribute('class', 'btn-add-many-cells');
-//     btn.setAttribute('type', 'submit');
-//
-//     div.appendChild(input);
-//     div.appendChild(btn);
-// }
-
 
 function createInput() {
     const input = document.createElement('p');
     input.setAttribute('type', 'text');
     input.setAttribute('class', 'input-cell');
     input.setAttribute('data-content', '0');
-    // input.setAttribute('tabindex', `${tabIndex++}`);
     input.setAttribute('contenteditable','false');
 
     return input;
@@ -1248,6 +1259,7 @@ function removeHideEmtyCellText() {
 
 document.addEventListener('click', (event) => {
 
+
     const inputs = document.getElementsByClassName('input-cell');
     const prevFocColCellNumber = document.getElementsByClassName('focused-col');
     const prevFocRowCellNumber = document.getElementsByClassName('focused-row');
@@ -1260,44 +1272,64 @@ document.addEventListener('click', (event) => {
         focusedMoreMenu[i].classList.remove('more-actions-btn-focused');
     }
 
+    const rowMenu = document.getElementById('row-menu-with-actions');
+    rowMenu.style.left = `-9999px`;
+    rowMenu.style.top = `-9999px`;
+    const focusedMoreMenuRow = document.getElementsByClassName('more-actions-btn-rows-focused');
+    for(let i = 0; i < focusedMoreMenuRow.length; i++) {
+        focusedMoreMenuRow[i].classList.remove('more-actions-btn-rows-focused');
+    }
+
     if(event.target.classList.contains('more-actions-btn')) {
         event.target.classList.add('more-actions-btn-focused');
         showColMenu(event.target.col, event.pageX, event.pageY);
     }
 
+    if(event.target.classList.contains('more-actions-btn-rows')) {
+        event.target.classList.add('more-actions-btn-rows-focused');
+        const arr = event.target.parentNode.parentNode.id.split('row');
+        const id = arr.join('');
+        showRowMenu(id, event.pageX, event.pageY);
+    }
+
     if(event.target.id === 'add-col-with-plus') {
-        console.log(event.target.parentNode.col);
         mutateCellToCellWithPluses(event.target.parentNode.col);
-        // createColWithPlus(event.target.parentNode.col)
     }
 
     if(event.target.id === 'add-col-with-square-brackets') {
-        console.log(event.target.parentNode.col);
-        addRemoveCol(1, event.target.parentNode.col, '+');
+        shiftCols(event.target.parentNode.col, 1);
         createStringWithSquadBrackets(event.target.parentNode.col);
     }
 
     if(event.target.id === 'add-col-with-quotes') {
-        console.log(event.target.parentNode.col);
-        addRemoveCol(1, event.target.parentNode.col, '+');
+        shiftCols(event.target.parentNode.col, 1);
         createStringWithDoubleQuotes(event.target.parentNode.col);
     }
 
     if(event.target.id === 'delete-col-with-shift') {
-        console.log(event.target.parentNode.col);
-        addRemoveCol(1, event.target.parentNode.col, '-');
+        removeColum(event.target.parentNode.col);
     }
 
+
     if(event.target.id === 'add-empty-col') {
-        console.log(event.target.parentNode.col);
-        addRemoveCol(1, event.target.parentNode.col, '+');
+        shiftCols(event.target.parentNode.col, 1);
     }
 
 
     if(event.target.id === 'clean-col') {
-        console.log(event.target.parentNode.col);
-        addRemoveCol(1, event.target.parentNode.col, 'false');
+        cleanCol(event.target.parentNode.col);
     }
+    if(event.target.id === 'clean-row') {
+        cleanRow(event.target.parentNode.row);
+    }
+
+    if(event.target.id === 'add-two-cols-with-plus') {
+        shiftCols(event.target.parentNode.col, 2);
+        createStringWithSquadBrackets(event.target.parentNode.col);
+        createStringWithDoubleQuotesOverTwo(event.target.parentNode.col);
+
+    }
+
 
     if(event.target.id === 'get-data-from-adGroup') {
         const rowAdGroupCells = document.getElementsByClassName('row3');
@@ -1372,21 +1404,7 @@ document.addEventListener('click', (event) => {
     }
 
     if (event.target.classList.contains('addInput')) {
-        const placeBefore = document.getElementsByClassName('addInput');
-        for(let i = 0; i < mainInput.childNodes.length; i++) {
-            const newElem = createInput();
-            newElem.classList.add(`row${i + 1}`);
-            newElem.row = i + 1;
-            newElem.col = mainInput.childNodes[i].childElementCount;
-            newElem.id = `row${newElem.row}col${newElem.col}`;
-            newElem.innerText = i + 1;
-            newElem.classList.add(`col${mainInput.childNodes[i].childElementCount}`);
-            mainInput.childNodes[i].insertBefore(newElem, placeBefore[i]);
-        }
-    }
-
-    if (event.target.classList.contains('addInput')) {
-
+        addInput();
     }
 
     if (event.target.classList.contains('input-cell')) {
@@ -1410,29 +1428,12 @@ document.addEventListener('click', (event) => {
 
 
 
-    // if (event.target.classList.contains('col-header')) {
-    //     const someElem = document.getElementsByClassName('input-cell');
-    //     const allElements = {};
-    //     for(let i = 0; i < someElem.length; i++) {
-    //
-    //         const classArrCurElem = someElem[i].attributes[1].innerText.split(' ');
-    //         const el = {};
-    //         el.col = classArrCurElem[2].split('col')[1];
-    //         el.row = classArrCurElem[1].split('row')[1];
-    //         el.innerText = someElem[i].innerText;
-    //         allElements[i] = el;
-    //     }
-    // }
+
 });
 
 document.addEventListener('keydown', (e) => {
-    // const test1 = getValuesFromCelPosition(1, 1);
-    // const test2 = getValuesFromCelPosition(1, 2);
-    // console.log(test1, test2);
-    // addRemoveCol(1, 5, '-');
     if(e.key === 'Tab'){
         event.preventDefault();
-        // removeHideEmtyCellText();
         if(event.target.row && event.target.col) {
             const inputs = document.getElementsByClassName('input-cell');
             for(let i = 0; i < inputs.length; i++) {
@@ -1451,7 +1452,6 @@ document.addEventListener('keydown', (e) => {
                 setEndOfContenteditable(nextCell);
                 nextCell.focus();
                 const positionElem = getCoords(nextCell);
-                // focusedElements.push(nextCell.id);
                 window.scrollTo(positionElem.left - 500, positionElem.top - 300);
             } else if (event.target.row === 14) {
                 if (document.getElementById(`row1col${event.target.col + 1}`)) {
@@ -1468,7 +1468,6 @@ document.addEventListener('keydown', (e) => {
                     setEndOfContenteditable(nextCell);
                     nextCell.focus();
                     const positionElem = getCoords(nextCell);
-                    // focusedElements.push(nextCell.id);
                     window.scrollTo(positionElem.left - 500, positionElem.top - 300);
                 } else {
                     const nextCell = document.getElementById(`row1col${event.target.col}`);
@@ -1479,7 +1478,6 @@ document.addEventListener('keydown', (e) => {
                     }
                     setEndOfContenteditable(nextCell);
                     nextCell.focus();
-                    // focusedElements.push(nextCell.id);
                     const positionElem = getCoords(nextCell);
                     window.scrollTo(positionElem.left - 500, positionElem.top - 300);
                 }
@@ -1548,7 +1546,6 @@ document.addEventListener('paste', (event) => {
                             changeFocuseOnRowSidePanel(`row${event.target.row}`);
                             changeFocuseOnColSidePanel(`col${event.target.col + i}`);
                             elem.dataset.content = arrOfColRows[0].length;
-                            console.log(1, arrOfColRows[0].length);
                             const positionElem = getCoords(elem);
 
                             window.scrollTo(positionElem.left - 500, positionElem.top - 300);
@@ -1644,7 +1641,6 @@ document.addEventListener('input', (event) => {
 
     if(event.target.classList.contains('row6') || event.target.classList.contains('row7')) {
         if(event.target.innerText.length  === 30) {
-            // event.target.style
         }
     }
 
@@ -1666,14 +1662,11 @@ document.addEventListener('copy', (event) => {
     navigator.clipboard.readText()
         .then(text => {
             let arr = text.split(String.fromCodePoint(13, 10, 13, 10));
-            let newString = 'too large query';
-            if (arr.length < 100) {
-                newString = arr.join(String.fromCodePoint(13, 10));
-                copyBuffer = newString;
-            }
+            let newString = arr.join(String.fromCodePoint(13, 10));
+            copyBuffer = newString;
+
             navigator.clipboard.writeText(newString)
                 .then(() => {
-                    console.log('ok');
                 })
                 .catch(err => {
                     console.log('Something went wrong', err);
@@ -1716,10 +1709,6 @@ function changeFocuseOnColSidePanel(id) {
     colNumberCellEl.classList.add('focused-col');
 }
 
-
-
-
-
 function setEndOfContenteditable(contentEditableElement) {
     var range,selection;
     if(document.createRange) {
@@ -1731,12 +1720,6 @@ function setEndOfContenteditable(contentEditableElement) {
         selection.addRange(range);
     }
 }
-
-
-
-
-
-
 
 function changeLongString(string) {
     let result = [];
@@ -1774,21 +1757,6 @@ function myMap(arr, callback) {
     }
 }
 
-// const someElem = document.getElementsByClassName('input-cell');
-//     const allElements = [];
-//     for(let i = 0; i < someElem.length; i++) {
-//
-//         const el = {};
-//         el.col = someElem[i].col;
-//         el.row = someElem[i].row;
-//         el.value = someElem[i].innerText;
-//         console.log(someElem[i].innerText);
-//         allElements.push(el);
-// }
-
-
-
-
 function reqListener () {
     console.log(this.responseText);
     window.open(this.responseText);
@@ -1816,15 +1784,23 @@ function sendRequest(title) {
         }
     }
 
-    console.log(allElements);
+    let xhr = new XMLHttpRequest();
+    var url = "http://localhost:3000/users";
+    xhr.open("POST", url, true);
+    xhr.setRequestHeader("Content-type", "application/json");
+    xhr.addEventListener("load", reqListener);
+    var data = JSON.stringify(allElements);
+    xhr.send(data);
+}
 
-    // let xhr = new XMLHttpRequest();
-    // var url = "http://localhost:3000/users";
-    // xhr.open("POST", url, true);
-    // xhr.setRequestHeader("Content-type", "application/json");
-    // xhr.addEventListener("load", reqListener);
-    // var data = JSON.stringify(allElements);
-    // xhr.send(data);
+function cleanCol(col) {
+    const cellsOfCurCol = document.getElementsByClassName(`col${col}`);
+    for (let i = 0; i < cellsOfCurCol.length; i++) {
+        const cell = cellsOfCurCol[i];
+        cell.classList.add('cell-without-text');
+        cell.innerText = textForEmptyInput;
+        cell.dataset.content = '0';
+    }
 }
 
 function getAllInputsValuesArrForStorage() {
@@ -1845,17 +1821,6 @@ function getAllInputsValuesArrForStorage() {
 
     return allElements;
 }
-//
-// var oReq = new XMLHttpRequest();
-// oReq.addEventListener("load", reqListener);
-// oReq.open("POST", "http://localhost:3000/users");
-// oReq.send(JSON.stringify(allElements));
-
-
-
-
-// document.getElementById('btn-create-document');
-
 
 function getCoords(elem) { // кроме IE8-
     const box = elem.getBoundingClientRect();
@@ -1868,186 +1833,251 @@ function getCoords(elem) { // кроме IE8-
 }
 
 //
-// document.addEventListener('mousedown', (event) => {
-//     if(event.target.classList.contains('input-cell')) {
-//         const pos = getCoords(event.target);
-//         const rangeDiv = document.getElementById('div-range-to-copy');
-//         rangeDiv.startPosX =  event.pageX;
-//         rangeDiv.startPosY =  event.pageY;
-//         rangeDiv.style.left = `${event.pageX}px`;
-//         rangeDiv.style.top = `${event.pageY}px`;
-//         rangeDiv.style.display = 'block';
+// function addRemoveCol(row, col, action) {
+//     const cellsToStay = getValuesBeforeCelPosition(row, col);
+//     const cellsToReplace = getValuesFromCelPosition(row, col);
+//
+//     if (action === '+') {
+//
+//     } else if (action === '-') {
+//         for (let j = 0; j < 13; j++) {
+//             cellsToReplace[j].value = textForEmptyInput;
+//         }
+//     } else if (action === 'false') {
+//         for (let j = 0; j < 13; j++) {
+//             cellsToReplace[j].value = textForEmptyInput;
+//         }
 //     }
-// });
 //
-// document.addEventListener('mousemove', (event) => {
-//     const rangeDiv = document.getElementById('div-range-to-copy');
-//     if(rangeDiv.startPosY || rangeDiv.startPosX) {
-//         if(event.pageX < rangeDiv.startPosX) {
-//             rangeDiv.style.width = `${event.pageX + rangeDiv.startPosX}px`;
+//     for(let i = 0; i < cellsToReplace.length; i++) {
+//         let cell;
+//         if (action === '+') {
+//             cell = document.getElementById(`row${cellsToReplace[i].row}col${cellsToReplace[i].col  + 1}`);
+//         } else if (action === '-') {
+//             cell = document.getElementById(`row${cellsToReplace[i].row}col${cellsToReplace[i].col - 1}`);
+//         } else if (action === 'false') {
+//             cell = document.getElementById(`row${cellsToReplace[i].row}col${cellsToReplace[i].col}`);
 //         }
-//         if (event.pageY < rangeDiv.startPosY) {
-//             rangeDiv.style.height = `${event.pageY + rangeDiv.startPosY}px`;
+//         if(cell) {
+//             if(cellsToReplace[i].value === textForEmptyInput || cellsToReplace[i].value === '') {
+//             } else {
+//                 cell.classList.remove('cell-without-text');
+//                 cell.innerText = cellsToReplace[i].value;
+//                 cell.dataset.content = cellsToReplace[i].value.length;
+//             }
 //         }
-//         if (event.pageX > rangeDiv.startPosX) {
-//             rangeDiv.style.width = `${event.pageX - rangeDiv.startPosX}px`;
-//         }
-//         if (event.pageY < rangeDiv.startPosY) {
-//             rangeDiv.style.height = `${event.pageY - rangeDiv.startPosY}px`;
-//         }
-//
 //     }
-// });
-//
-// document.addEventListener('mouseup', (event) => {
-//     const rangeDiv = document.getElementById('div-range-to-copy');
-//     rangeDiv.style.left = '0';
-//     rangeDiv.style.top = '0';
-//     rangeDiv.style.width = '0';
-//     rangeDiv.style.height = '0';
-//     rangeDiv.style.display = 'none';
-// });
-
-function add2Cols(row, col) {
-    const cellsToReplace = getValuesFromCelPosition(row, col);
-}
-// function cleanColum(colId) {
-//     const rowCells = document.getElementsByClassName(`col${colId}`);
-//     for (let i = 0; i < rowCells.length; i++) {
-//         rowCells[i].innerText = textForEmptyInput;
-//         if(rowCells[i].classList.contains('cell-without-text')) {
-//             rowCells[i].classList.remove('cell-without-text');
+//     for(let i = 0; i < cellsToStay.length; i++) {
+//         const cell = document.getElementById(`row${cellsToStay[i].row}col${cellsToStay[i].col}`);
+//         if(cell) {
+//             if(cellsToStay[i].value === textForEmptyInput || cellsToStay[i].value === '') {
+//             } else {
+//                 cell.classList.remove('cell-without-text');
+//                 cell.innerText = cellsToStay[i].value;
+//                 cell.dataset.content = cellsToStay[i].value.length;
+//             }
 //         }
-//         rowCells[i].classList.add('cell-without-text');
-//         rowCells[i].dataset.content = '0';
 //     }
 // }
-function addRemoveCol(row, col, action) {
-    const cellsToStay = getValuesBeforeCelPosition(row, col);
-    const cellsToReplace = getValuesFromCelPosition(row, col);
 
-    if (action === '+') {
+//
+// function getValuesBeforeCelPosition(row, col) {
+//     const cells = document.getElementsByClassName('input-cell');
+//     let rowForFind = 1;
+//     let colForFind = 2;
+//     const result = [];
+//     for (let i = 0; i < cells.length; i++) {
+//         if (cells[i].classList.contains('cell-without-text')) {
+//         } else {
+//             cells[i].innerText = textForEmptyInput;
+//             cells[i].classList.add('cell-without-text');
+//             cells[i].dataset.content = 0;
+//         }
+//         if (rowForFind < 14) {
+//             const cell = document.getElementById(`row${rowForFind++}col${colForFind}`);
+//             if (cell) {
+//                 result.push({
+//                     value: cell.innerText,
+//                     col: cell.col,
+//                     row: cell.row
+//                 });
+//             }
+//         } else if (rowForFind === 14) {
+//             const cell = document.getElementById(`row${rowForFind}col${colForFind++}`);
+//             rowForFind = 1;
+//             if (cell) {
+//                 result.push({
+//                     value: cell.innerText,
+//                     col: cell.col,
+//                     row: cell.row
+//                 });
+//             }
+//         }
+//         if (colForFind === col + 1) {
+//             return result;
+//         }
+//     }
+//
+//     return result;
+// }
+//
+// function getValuesFromCelPosition(row, col) {
+//     const cells = document.getElementsByClassName('input-cell');
+//     let rowForFind = 1;
+//     let colForFind = col + 1;
+//     const result = [];
+//     for (let i = 0; i < cells.length; i++) {
+//         if (cells[i].classList.contains('cell-without-text')) {
+//         } else {
+//             cells[i].innerText = textForEmptyInput;
+//             cells[i].classList.add('cell-without-text');
+//             cells[i].dataset.content = 0;
+//         }
+//         if (rowForFind < 14) {
+//             const cell = document.getElementById(`row${rowForFind++}col${colForFind}`);
+//             if (cell) {
+//                 result.push({
+//                     value: cell.innerText,
+//                     col: cell.col,
+//                     row: cell.row
+//                 });
+//             }
+//         } else if (rowForFind === 14) {
+//             const cell = document.getElementById(`row${rowForFind}col${colForFind++}`);
+//             rowForFind = 1;
+//             if (cell) {
+//                 result.push({
+//                     value: cell.innerText,
+//                     col: cell.col,
+//                     row: cell.row
+//                 });
+//             }
+//         }
+//     }
+//
+//     return result;
+// }
 
-    } else if (action === '-') {
-        for (let j = 0; j < 13; j++) {
-            cellsToReplace[j].value = textForEmptyInput;
-        }
-    } else if (action === 'false') {
-        for (let j = 0; j < 13; j++) {
-            cellsToReplace[j].value = textForEmptyInput;
-        }
-    }
+// function shiftTwoColsDown(row, col) {
+//     const cellsToStay = getValuesBeforeCelPositionSecondVariation(row, col);
+//     const cellsToReplace = getValuesFromCelPositionSecondVariation(row, col);
+//     const arrCellsOfCurentRow = [];
+//
+//     const currentColCells = document.getElementsByClassName(`col${col}`);
+//     for (let i = 0; i < currentColCells.length; i++) {
+//         arrCellsOfCurentRow.push({
+//             value: currentColCells[i].innerText,
+//             col: currentColCells[i].row,
+//             row: currentColCells[i].col
+//         });
+//     }
+//     console.log(cellsToReplace);
+//     for(let i = 0; i < cellsToReplace.length; i++) {
+//         let cell = document.getElementById(`row${cellsToReplace[i].row}col${cellsToReplace[i].col + 2}`);
+//
+//         if(cell) {
+//             if(cellsToReplace[i].value === textForEmptyInput || cellsToReplace[i].value === '') {
+//             } else {
+//                 cell.classList.remove('cell-without-text');
+//                 cell.innerText = cellsToReplace[i].value;
+//                 cell.dataset.content = cellsToReplace[i].value.length;
+//             }
+//         }
+//     }
+//     for(let i = 0; i < cellsToStay.length; i++) {
+//         const cell = document.getElementById(`row${cellsToStay[i].row}col${cellsToStay[i].col}`);
+//         if(cell) {
+//             if(cellsToStay[i].value === textForEmptyInput || cellsToStay[i].value === '') {
+//             } else {
+//                 cell.classList.remove('cell-without-text');
+//                 cell.innerText = cellsToStay[i].value;
+//                 cell.dataset.content = cellsToStay[i].value.length;
+//             }
+//         }
+//     }
+// }
 
-    for(let i = 0; i < cellsToReplace.length; i++) {
-        let cell;
-        if (action === '+') {
-            cell = document.getElementById(`row${cellsToReplace[i].row}col${cellsToReplace[i].col + 1}`);
-        } else if (action === '-') {
-            cell = document.getElementById(`row${cellsToReplace[i].row}col${cellsToReplace[i].col - 1}`);
-        } else if (action === 'false') {
-            cell = document.getElementById(`row${cellsToReplace[i].row}col${cellsToReplace[i].col}`);
-        }
-        if(cell) {
-            if(cellsToReplace[i].value === textForEmptyInput || cellsToReplace[i].value === '') {
-            } else {
-                cell.classList.remove('cell-without-text');
-                cell.innerText = cellsToReplace[i].value;
-                cell.dataset.content = cellsToReplace[i].value.length;
-            }
-        }
-    }
-    for(let i = 0; i < cellsToStay.length; i++) {
-        const cell = document.getElementById(`row${cellsToStay[i].row}col${cellsToStay[i].col}`);
-        if(cell) {
-            if(cellsToStay[i].value === textForEmptyInput || cellsToStay[i].value === '') {
-            } else {
-                cell.classList.remove('cell-without-text');
-                cell.innerText = cellsToStay[i].value;
-                cell.dataset.content = cellsToStay[i].value.length;
-            }
-        }
-    }
-}
 
-function getValuesBeforeCelPosition(row, col) {
-    const cells = document.getElementsByClassName('input-cell');
-    let rowForFind = 1;
-    let colForFind = 2;
-    const result = [];
-    for (let i = 0; i < cells.length; i++) {
-        if (cells[i].classList.contains('cell-without-text')) {
-        } else {
-            cells[i].innerText = textForEmptyInput;
-            cells[i].classList.add('cell-without-text');
-            cells[i].dataset.content = 0;
-        }
-        if (rowForFind < 14) {
-            const cell = document.getElementById(`row${rowForFind++}col${colForFind}`);
-            if (cell) {
-                result.push({
-                    value: cell.innerText,
-                    col: cell.col,
-                    row: cell.row
-                });
-            }
-        } else if (rowForFind === 14) {
-            const cell = document.getElementById(`row${rowForFind}col${colForFind++}`);
-            rowForFind = 1;
-            if (cell) {
-                result.push({
-                    value: cell.innerText,
-                    col: cell.col,
-                    row: cell.row
-                });
-            }
-        }
-        if (colForFind === col) {
-            return result;
-        }
-    }
+// function getValuesFromCelPositionSecondVariation(row, col) { //col which was selected stay at the same position
+//     const cells = document.getElementsByClassName('input-cell');
+//     let rowForFind = 1;
+//     let colForFind = col + 1;
+//     const result = [];
+//
+//     for (let i = 0; i < cells.length; i++) {
+//         if (cells[i].classList.contains('cell-without-text')) {
+//         } else {
+//             cells[i].innerText = textForEmptyInput;
+//             cells[i].classList.add('cell-without-text');
+//             cells[i].dataset.content = 0;
+//         }
+//         if (rowForFind < 14) {
+//             const cell = document.getElementById(`row${rowForFind++}col${colForFind}`);
+//             if (cell) {
+//                 result.push({
+//                     value: cell.innerText,
+//                     col: cell.col,
+//                     row: cell.row
+//                 });
+//             }
+//         } else if (rowForFind === 14) {
+//             const cell = document.getElementById(`row${rowForFind}col${colForFind++}`);
+//             rowForFind = 1;
+//             if (cell) {
+//                 result.push({
+//                     value: cell.innerText,
+//                     col: cell.col,
+//                     row: cell.row
+//                 });
+//             }
+//         }
+//     }
+//
+//     return result;
+// }
 
-    return result;
-}
+// function getValuesBeforeCelPositionSecondVariation(row, col) {
+//     const cells = document.getElementsByClassName('input-cell');
+//     let rowForFind = 1;
+//     let colForFind = 2;
+//     const result = [];
+//     for (let i = 0; i < cells.length; i++) {
+//         if (cells[i].classList.contains('cell-without-text')) {
+//         } else {
+//             cells[i].innerText = textForEmptyInput;
+//             cells[i].classList.add('cell-without-text');
+//             cells[i].dataset.content = 0;
+//         }
+//         if (rowForFind < 14) {
+//             const cell = document.getElementById(`row${rowForFind++}col${colForFind}`);
+//             if (cell) {
+//                 result.push({
+//                     value: cell.innerText,
+//                     col: cell.col,
+//                     row: cell.row
+//                 });
+//             }
+//         } else if (rowForFind === 14) {
+//             const cell = document.getElementById(`row${rowForFind}col${colForFind++}`);
+//             rowForFind = 1;
+//             if (cell) {
+//                 result.push({
+//                     value: cell.innerText,
+//                     col: cell.col,
+//                     row: cell.row
+//                 });
+//             }
+//         }
+//         if (colForFind === col + 1) {
+//             return result;
+//         }
+//     }
+//
+//     return result;
+// }
 
-function getValuesFromCelPosition(row, col) {
-    const cells = document.getElementsByClassName('input-cell');
-    let rowForFind = 1;
-    let colForFind = col;
-    const result = [];
-    for (let i = 0; i < cells.length; i++) {
-        if (cells[i].classList.contains('cell-without-text')) {
-        } else {
-            cells[i].innerText = textForEmptyInput;
-            cells[i].classList.add('cell-without-text');
-            cells[i].dataset.content = 0;
-        }
-        if (rowForFind < 14) {
-            const cell = document.getElementById(`row${rowForFind++}col${colForFind}`);
-            if (cell) {
-                result.push({
-                    value: cell.innerText,
-                    col: cell.col,
-                    row: cell.row
-                });
-            }
-        } else if (rowForFind === 14) {
-            const cell = document.getElementById(`row${rowForFind}col${colForFind++}`);
-            rowForFind = 1;
-            if (cell) {
-                result.push({
-                    value: cell.innerText,
-                    col: cell.col,
-                    row: cell.row
-                });
-            }
-        }
-    }
-
-    return result;
-}
 
 function moreActionsElemCreate(elementToAppend) {
-    // const elToAppend = document.getElementById(id);
     const img = document.createElement('img');
     img.setAttribute('src', '/images/moreActions.png');
     img.classList.add('more-actions-btn');
@@ -2061,41 +2091,46 @@ function showColMenu(col, pageX, pageY){
     colMenu.col = col;
     colMenu.style.left = `${pageX}px`;
     colMenu.style.top = `${pageY}px`;
-    // colMenu.addEventListener('mouseleave', () => {
-    //         colMenu.style.left = `-9999px`;
-    //         colMenu.style.top = `-9999px`;
-    //         const focusedMoreMenu = document.getElementsByClassName('more-actions-btn-focused');
-    //         for(let i = 0; i < focusedMoreMenu.length; i++) {
-    //             focusedMoreMenu[i].classList.remove('more-actions-btn-focused');
-    //         }
-    // });
+}
+
+function showRowMenu(row, pageX, pageY){
+    const rowMenu = document.getElementById('row-menu-with-actions');
+    rowMenu.row = row;
+    rowMenu.style.left = `${pageX}px`;
+    rowMenu.style.top = `${pageY}px`;
+}
+
+function cleanRow(row) {
+    const cells = document.getElementsByClassName(`row${row}`);
+    for (let i = 0; i < cells.length; i++) {
+        const cell = cells[i];
+        cell.classList.add('cell-without-text');
+        cell.innerText = textForEmptyInput;
+        cell.dataset.content = '0';
+    }
 }
 
 function mutateCellToCellWithPluses (col) {
     const cell = document.getElementById(`row4col${col}`);
     let arr;
-    let editArr;
     if (cell.innerText.search(/\[/g) !== -1) {
         let arrToEdit = cell.innerText.split('');
         arrToEdit.shift();
         arrToEdit.pop();
         arr = arrToEdit.join('');
         arr = arr.split(String.fromCodePoint(32));
-       console.log(arr);
     } else if (cell.innerText.search(/\"/g) !== -1) {
         let arrToEdit = cell.innerText.split('');
         arrToEdit.shift();
         arrToEdit.pop();
         arr = arrToEdit.join('');
         arr = arr.split(String.fromCodePoint(32));
-       console.log(arr);
     } else {
         arr = cell.innerText.split(String.fromCodePoint(32));
     }
 
         const maped = arr.map((x) => {
             if (x.search(/\+/g) !== -1 || x === textForEmptyInput) {
-                console.log('contains +');
                 return x;
             } else {
                 return '\+' + x;
@@ -2110,27 +2145,25 @@ function mutateCellToCellWithPluses (col) {
 }
 
 function createStringWithSquadBrackets(col) {
-    const cell = document.getElementById(`row4col${col + 1}`);
-    const cellToAdd = document.getElementById(`row4col${col}`);
+    const cell = document.getElementById(`row4col${col}`);
+    const cellToAdd = document.getElementById(`row4col${col + 1}`);
+    addInfoInGroupColFromCurCol(col, 1);
+
     let newString;
     if (cell.innerText === textForEmptyInput) {
-        console.log(cell.innerText);
     } else {
         if (cell.innerText.search(/\+/g) !== -1) {
             const checkPlus = cell.innerText.split('+');
             checkPlus.unshift('[');
             checkPlus.push(']');
             newString = checkPlus.join('');
-            console.log(newString);
         } else if (cell.innerText.search(/\[/g) !== -1) {
             newString = cell.innerText;
         } else if (cell.innerText.search(/\"/g) !== -1) {
             const checkQuotes = cell.innerText.split('"');
-
             checkQuotes.unshift('[');
             checkQuotes.push(']');
-            newString = checkQuotes.join('')
-            console.log(newString);
+            newString = checkQuotes.join('');
         } else {
             const checkQuotes = cell.innerText.split('');
             checkQuotes.unshift('[');
@@ -2140,23 +2173,21 @@ function createStringWithSquadBrackets(col) {
         cellToAdd.innerText = newString;
         cellToAdd.dataset.content = newString.length;
         cellToAdd.classList.remove('cell-without-text');
-        cellToAdd.click();
     }
 }
 
 function createStringWithDoubleQuotes(col) {
-    const cell = document.getElementById(`row4col${col + 1}`);
-    const cellToAdd = document.getElementById(`row4col${col}`);
+    const cell = document.getElementById(`row4col${col}`);
+    const cellToAdd = document.getElementById(`row4col${col + 1}`);
+    addInfoInGroupColFromCurCol(col, 1);
     let newString;
     if (cell.innerText === textForEmptyInput) {
-        console.log(cell.innerText);
     } else {
         if (cell.innerText.search(/\+/g) !== -1) {
             const checkPlus = cell.innerText.split('+');
             checkPlus.unshift('"');
             checkPlus.push('"');
             newString = checkPlus.join('');
-            console.log(newString);
         } else if (cell.innerText.search(/\"/g) !== -1) {
             newString = cell.innerText;
         } else if (cell.innerText.search(/\[/g) !== -1) {
@@ -2165,8 +2196,7 @@ function createStringWithDoubleQuotes(col) {
             checkQuotes = checkQuotes.split(']');
             checkQuotes.unshift('"');
             checkQuotes.push('"');
-            newString = checkQuotes.join('')
-            console.log(newString);
+            newString = checkQuotes.join('');
         } else {
             const checkQuotes = cell.innerText.split('');
             checkQuotes.unshift('"');
@@ -2176,8 +2206,146 @@ function createStringWithDoubleQuotes(col) {
         cellToAdd.innerText = newString;
         cellToAdd.dataset.content = newString.length;
         cellToAdd.classList.remove('cell-without-text');
-        cellToAdd.click();
     }
+}
+
+function createStringWithDoubleQuotesOverTwo(col) {
+    const cell = document.getElementById(`row4col${col}`);
+    const cellToAdd = document.getElementById(`row4col${col + 2}`);
+    addInfoInGroupColFromCurCol(col, 2);
+    let newString;
+    if (cell.innerText === textForEmptyInput) {
+    } else {
+        if (cell.innerText.search(/\+/g) !== -1) {
+            const checkPlus = cell.innerText.split('+');
+            checkPlus.unshift('"');
+            checkPlus.push('"');
+            newString = checkPlus.join('');
+        } else if (cell.innerText.search(/\"/g) !== -1) {
+            newString = cell.innerText;
+        } else if (cell.innerText.search(/\[/g) !== -1) {
+            let arr = cell.innerText.split('[');
+            let checkQuotes = arr.join('');
+            checkQuotes = checkQuotes.split(']');
+            checkQuotes.unshift('"');
+            checkQuotes.push('"');
+            newString = checkQuotes.join('');
+        } else {
+            const checkQuotes = cell.innerText.split('');
+            checkQuotes.unshift('"');
+            checkQuotes.push('"');
+            newString = checkQuotes.join('');
+        }
+        cellToAdd.innerText = newString;
+        cellToAdd.dataset.content = newString.length;
+        cellToAdd.classList.remove('cell-without-text');
+    }
+}
+
+
+function shiftCols(col, numberOfColsToAdd) {
+    const elemsToReplace = getElemsToReplace(col);
+    const elementsReplaceTo = getElementsReplaceTo(col, numberOfColsToAdd);
+    for (let i = 0; i < elemsToReplace.length; i++) {
+        if (elemsToReplace[i].textInCell !== textForEmptyInput) {
+        elementsReplaceTo[i].innerText = elemsToReplace[i].textInCell;
+        modifyCellWithText(elementsReplaceTo[i]);
+        elementsReplaceTo[i].dataset.content = elementsReplaceTo[i].innerText.length;
+        }
+    }
+}
+
+function getElemsToReplace(col) {
+    let arrObjectsToReplace = [];
+    for (let i = col + 1; i < mainInput.childNodes[1].childElementCount; i++) {
+        for(let j = 1; j < 15; j++) {
+            const cellBeforeCurrentCol = document.getElementById(`row${j}col${i}`);
+            arrObjectsToReplace.push({
+                textInCell: cellBeforeCurrentCol.innerText,
+                cellId: cellBeforeCurrentCol.id,
+                col: cellBeforeCurrentCol.col,
+                row: cellBeforeCurrentCol.row
+            });
+            editReplacedInputs(cellBeforeCurrentCol);
+        }
+    }
+
+    return arrObjectsToReplace;
+}
+
+
+function getElementsReplaceTo (col, numberOfColsToAdd) {
+    let ElementsReplaceTo = [];
+
+    for(let i = 0; i < numberOfColsToAdd + 1; i++) {
+        addInput();
+    }
+
+    for (let i = col + numberOfColsToAdd + 1; i < mainInput.childNodes[1].childElementCount; i++) {
+        for(let j = 1; j < 15; j++) {
+            const cell = document.getElementById(`row${j}col${i}`);
+            ElementsReplaceTo.push(cell);
+        }
+    }
+
+    return ElementsReplaceTo;
+}
+
+
+function modifyCellWithText(elem) {
+    if (elem.classList.contains('cell-without-text')) {
+        elem.classList.remove('cell-without-text');
+    }
+}
+
+function editReplacedInputs(elem) {
+    elem.innerText = textForEmptyInput;
+    if (elem.classList.contains('cell-without-text')) {
+        elem.classList.remove('cell-without-text');
+    }
+    elem.classList.add('cell-without-text');
+    elem.dataset.content = '0';
+}
+
+
+function addInfoInGroupColFromCurCol(col, number) {
+    const cellr3 = document.getElementById(`row3col${col}`);
+    const cellr3ToInnerTextAdd = document.getElementById(`row3col${col + 1}`);
+    if (cellr3.innerText !== textForEmptyInput) {
+        cellr3ToInnerTextAdd.innerText = cellr3.innerText;
+        cellr3ToInnerTextAdd.dataset.content = cellr3ToInnerTextAdd.innerText.length;
+        modifyCellWithText(cellr3ToInnerTextAdd);
+        if (number === 2) {
+            const cellr3ToInnerTextAddSecond = document.getElementById(`row3col${col + 2}`);
+            cellr3ToInnerTextAddSecond.innerText = cellr3.innerText;
+            cellr3ToInnerTextAddSecond.dataset.content = cellr3ToInnerTextAddSecond.innerText.length;
+            modifyCellWithText(cellr3ToInnerTextAddSecond);
+        }
+    }
+}
+
+function removeColum(col) {
+    const elementsToReplace = getElemsToReplace(col);
+    const elementsReplaceTo = getElementsColReplaceToForDelete(col);
+    for (let i = 0; i < elementsToReplace.length; i++) {
+        elementsReplaceTo[i].innerText = elementsToReplace[i].textInCell;
+        if(elementsReplaceTo[i].innerText === textForEmptyInput) {
+            editReplacedInputs(elementsReplaceTo[i])
+        } else {
+            modifyCellWithText(elementsReplaceTo[i]);
+        }
+    }
+}
+
+function getElementsColReplaceToForDelete (col) {
+    let elementsReplaceTo = [];
+    for (let i = col; i < mainInput.childNodes[1].childElementCount; i++) {
+        for(let j = 1; j < 15; j++) {
+            const cell = document.getElementById(`row${j}col${i}`);
+                elementsReplaceTo.push(cell);
+        }
+    }
+    return elementsReplaceTo;
 }
 
 },{"maxlength-contenteditable":1}]},{},[2]);

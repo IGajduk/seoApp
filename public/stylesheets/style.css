@@ -352,11 +352,47 @@ a {
     cursor: pointer;
 }
 .actions-for-col-menu:hover{
-    background: #ffffff;
-    color: #29302e;
+    background: #69a090;
+    color: #ffffff;
 }
 .more-actions-btn-focused {
     background: #7ed6bc;
     border-radius: 10px;
 }
 
+.more-actions-btn-rows {
+    width: 8px;
+    height: 14px;
+    cursor: pointer;
+}
+
+.more-actions-btn-rows-focused {
+    background: #7ed6bc;
+    border-radius: 10px;
+}
+
+#row-menu-with-actions {
+    left: -9999px;
+    top: 0;
+    z-index: 999999;
+    display: flex;
+    flex-direction: column;
+    min-width: 230px;
+    min-height: 170px;
+    background: #29302e;
+    position: absolute;
+    border-radius: 3px;
+    justify-content: center;
+    border: 1px solid #29302e;
+}
+
+.actions-for-row-menu {
+    color: #ffffff;
+    width: 230px;
+    padding: 10px 20px;
+    cursor: pointer;
+}
+.actions-for-row-menu:hover{
+    background: #69a090;
+    color: #ffffff;
+}
