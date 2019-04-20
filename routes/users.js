@@ -77,7 +77,7 @@ ws.cell(1, 14)
 
  wb.write(createdFileName);
     setTimeout(() => {
-        res.send(`http://seo-ad-app.herokuapp.com/upload/${cells[0].fileTitle}.xlsx`);
+        res.send(`https://seo-ad-app.herokuapp.com/upload/${cells[0].fileTitle}.xlsx`);
     }, 1000)
 
 });

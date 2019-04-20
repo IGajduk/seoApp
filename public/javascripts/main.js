@@ -671,8 +671,8 @@ function sendRequest(title) {
         }
     }
 
-    let xhr = new XMLHttpRequest();
-    var url = "http://seo-ad-app.herokuapp.com/users";
+    let xhr = new XMLHttpsRequest();
+    var url = "https://seo-ad-app.herokuapp.com/users";
     xhr.open("POST", url, true);
     xhr.setRequestHeader("Content-type", "application/json");
     xhr.addEventListener("load", reqListener);

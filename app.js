@@ -8,8 +8,12 @@ var maxlengthContentEditableLib = require('maxlength-contenteditable');
 
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var cors = require('cors');
 
 var app = express();
+
+
+// use it before all route definitions
 
 var bodyParser = require('body-parser');
 app.use(bodyParser.json({ limit: '50mb' }));
@@ -27,8 +31,10 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.use(cors({origin: 'https://seo-ad-app.herokuapp.com'}));
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
