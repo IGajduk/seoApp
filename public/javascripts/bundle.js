@@ -500,7 +500,8 @@ exports.maxlengthContentEditable = undefined;
 __webpack_require__(29);
 
 function maxlengthContentEditable() {
-  var editableElements = document.querySelectorAll('[contenteditable="true"]');
+  var editableElements = document.querySelectorAll('div[contenteditable="true"]');
+
   var clipboardEvents = ['copy', 'paste', 'cut'];
   var keyboardEvents = ['keyup', 'keypress', 'keydown', 'blur', 'change'];
 
@@ -1111,7 +1112,6 @@ module.exports = function (exec, skipClosing) {
 /***/ })
 /******/ ]);
 });
-
 },{}],2:[function(require,module,exports){
 const maxlengthContentEditableLib = require('maxlength-contenteditable');
 const mainInput = document.getElementById('main');
@@ -1137,13 +1137,15 @@ for(let i = 0; i < 14; i++) {
         newElem.id = `row${newElem.row}col${newElem.col}`;
         newElem.innerText = textForEmptyInput;
         newElem.classList.add('cell-without-text');
-        for(let i = 0; i < arrOfCellsObjectsStorage.length; i++) {
-            const found = arrOfCellsObjectsStorage[i];
-            if(found.col === newElem.col && found.row === newElem.row) {
-                if(found.value) {
-                    newElem.innerText = found.value;
-                    newElem.classList.remove('cell-without-text');
-                    newElem.dataset.content = found.value.length;
+        if(arrOfCellsObjectsStorage !== null) {
+            for (let i = 0; i < arrOfCellsObjectsStorage.length; i++) {
+                const found = arrOfCellsObjectsStorage[i];
+                if (found.col === newElem.col && found.row === newElem.row) {
+                    if (found.value) {
+                        newElem.innerText = found.value;
+                        newElem.classList.remove('cell-without-text');
+                        newElem.dataset.content = found.value.length;
+                    }
                 }
             }
         }
@@ -1785,7 +1787,7 @@ function sendRequest(title) {
     }
 
     let xhr = new XMLHttpRequest();
-    var url = "http://localhost:3000/users";
+    var url = "http://seo-ad-app.herokuapp.com/users";
     xhr.open("POST", url, true);
     xhr.setRequestHeader("Content-type", "application/json");
     xhr.addEventListener("load", reqListener);

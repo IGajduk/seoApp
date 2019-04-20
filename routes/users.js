@@ -76,9 +76,8 @@ ws.cell(1, 14)
     // const createdFileName = path.join(__dirname, '../public', 'upload', `${cells[0].value}.xlsx`);
 
  wb.write(createdFileName);
-    console.log(createdFileName);
     setTimeout(() => {
-        res.send(`http://localhost:3000/upload/${cells[0].fileTitle}.xlsx`);
+        res.send(`http://seo-ad-app.herokuapp.com/upload/${cells[0].fileTitle}.xlsx`);
     }, 1000)
 
 });
